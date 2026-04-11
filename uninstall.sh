@@ -1,67 +1,48 @@
 #!/bin/bash
+# Mihomo 卸载脚本
+set -e
 
-echo -e ''
-echo -e "\033[32m========Clash for OPNsense 代理全家桶一键卸载脚本=========\033[0m"
-echo -e ''
-
-# 定义颜色变量
-GREEN="\033[32m"
-YELLOW="\033[33m"
-RED="\033[31m"
-RESET="\033[0m"
-
-# 定义日志函数
-log() {
-    local color="$1"
-    local message="$2"
-    echo -e "${color}${message}${RESET}"
+print_step() {
+    echo
+    echo "==> $1"
 }
 
-# 删除程序和配置
-log "$YELLOW" "删除代理程序和配置，请稍等..."
-# 删除配置
-rm -rf /usr/local/etc/clash
-rm -rf /usr/local/etc/mosdns
+if [[ $EUID -ne 0 ]]; then
+    echo "错误：请使用 root 运行此脚本。" >&2
+    exit 1
+fi
 
-# 删除rc.d
-rm -f /usr/local/etc/rc.d/clash
-rm -f /usr/local/etc/rc.d/mosdns
+print_step "准备卸载 Mihomo"
+echo "该操作将删除 Mihomo 程序、Web 管理页面、启动项、运行文件和配置文件。"
+read -p "是否继续？(y/N): " confirm
+if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+    echo "操作已取消。"
+    exit 0
+fi
 
-# 删除rc.conf
-rm -f /etc/rc.conf.d/clash
-rm -f /etc/rc.conf.d/mosdns
+print_step "停止 Mihomo 服务"
+/etc/init.d/mihomo stop >/dev/null 2>&1 || true
 
-# 删除action
-rm -f /usr/local/opnsense/service/conf/actions.d/actions_clash.conf
-rm -f /usr/local/opnsense/service/conf/actions.d/actions_mosdns.conf
+print_step "移除开机自启"
+rm -f /etc/rc.d/rc3.d/S99mihomo
 
-# 删除菜单和缓存
-rm -rf /usr/local/opnsense/mvc/app/models/OPNsense/Magic
+print_step "删除程序文件"
+rm -f /etc/init.d/mihomo
+rm -f /usr/local/bin/mihomo
+rm -f /srv/web/ipfire/cgi-bin/mihomo.cgi
 
-# 删除inc
-rm -f /usr/local/etc/inc/plugins.inc.d/clash.inc
-rm -f /usr/local/etc/inc/plugins.inc.d/mosdns.inc
+print_step "删除运行文件"
+rm -rf /var/run/mihomo
+rm -f /var/log/mihomo.log
 
-# 删除php
-rm -f /usr/local/www/services_clash.php
-rm -f /usr/local/www/services_mosdns.php
-rm -f /usr/local/www/status_clash_logs.php
-rm -f /usr/local/www/status_clash.php
-rm -f /usr/local/www/status_mosdns_logs.php
-rm -f /usr/local/www/status_mosdns.php
-rm -f /usr/local/www/sub.php
+print_step "删除配置文件"
+rm -rf /etc/mihomo
 
-# 删除程序
-rm -f /usr/local/bin/clash
-rm -f /usr/local/bin/mosdns
-echo ""
+print_step "恢复菜单"
+cp -a /var/ipfire/menu.d/30-network.menu.bak /var/ipfire/menu.d/30-network.menu 2>/dev/null || true
 
-# 重启所有服务
-log "$YELLOW" "重新应用所有更改，请稍等..."
-/usr/local/etc/rc.reload_all >/dev/null 2>&1
-service configd restart > /dev/null 2>&1
-echo ""
+print_step "重载 Web 服务"
+/etc/init.d/apache reload >/dev/null 2>&1 || true
 
-# 完成提示
-log "$GREEN" "卸载完成，请手动删除TUN接口，将Unbound DNS端口改回53。"
-echo ""
+echo
+echo "Mihomo 卸载完成！"

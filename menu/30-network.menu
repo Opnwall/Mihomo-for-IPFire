@@ -1,0 +1,102 @@
+    $subnetwork->{'10.netconf'} = {		
+	            'caption' => "$Lang::tr{'net config'}",
+			    'uri' => '/cgi-bin/netconfig.cgi',
+			    'title' => "$Lang::tr{'net config'}",
+			    'enabled' => 0,
+			     };
+	$subnetwork->{'11.zoneconf'} = {
+			    'caption' => "$Lang::tr{'zoneconf title'}",
+			    'uri' => '/cgi-bin/zoneconf.cgi',
+			    'title' => "$Lang::tr{'zoneconf title'}",
+			    'enabled' => 1,
+			     };
+    $subnetwork->{'12.dns'} = {
+                'caption' => $Lang::tr{'dns title'},
+                'uri' => '/cgi-bin/dns.cgi',
+                'title' => "$Lang::tr{'dns title'}",
+                'enabled' => 1,
+                 };
+    $subnetwork->{'15.mihomo'} = {
+				'caption' => 'Mihomo',
+			    'uri' => '/cgi-bin/mihomo.cgi',
+			    'title' => "$Lang::tr{'mihomo'}",
+			    'enabled' => 1,
+			 	 };	  
+    $subnetwork->{'20.proxy'} = {
+			    'caption' => "$Lang::tr{'web proxy'}",
+			    'uri' => '/cgi-bin/proxy.cgi',
+			    'title' => "$Lang::tr{'web proxy'}",
+			    'enabled' => 1,
+			     };
+    $subnetwork->{'21.urlfilter'} = {
+			    'caption' => $Lang::tr{'url filter'},
+			    'uri' => '/cgi-bin/urlfilter.cgi',
+			    'title' => $Lang::tr{'url filter'},
+			    'enabled' => 1,
+			     };
+    $subnetwork->{'22.updxlrator'} = {
+			    'caption' => $Lang::tr{'update accelerator'},
+			    'uri' => '/cgi-bin/updatexlrator.cgi',
+			    'title' => $Lang::tr{'update accelerator'},
+			    'enabled' => 1,
+			     };
+    $subnetwork->{'30.dhcp'} = {
+				'caption' => $Lang::tr{'dhcp server'},
+				'uri' => '/cgi-bin/dhcp.cgi',
+				'title' => "$Lang::tr{'dhcp server'}",
+				'enabled' => 1,
+				 };
+    $subnetwork->{'31.lldp'} = {
+				'caption' => $Lang::tr{'lldp'},
+				'uri' => '/cgi-bin/lldp.cgi',
+				'title' => "$Lang::tr{'lldp'}",
+				'enabled' => 1,
+				 };
+	$subnetwork->{'32.captive'} = {
+				'caption' => $Lang::tr{'Captive'},
+			    'uri' => '/cgi-bin/captive.cgi',
+			    'title' => $Lang::tr{'Captive'},
+			    'enabled' => 1,
+			     };
+    $subnetwork->{'40.scheduler'} = {
+				'caption' => $Lang::tr{'connscheduler'},
+				'uri' => '/cgi-bin/connscheduler.cgi',
+				'title' => "$Lang::tr{'connscheduler'}",
+				'enabled' => 1,
+				 };
+    $subnetwork->{'50.hosts'} = {
+				'caption' => $Lang::tr{'edit hosts'},
+				'uri' => '/cgi-bin/hosts.cgi',
+				'title' => "$Lang::tr{'edit hosts'}",
+				'enabled' => 1,
+				 };
+    $subnetwork->{'52.dnsforward'} = {
+                'caption' => $Lang::tr{'dnsforward'},
+                'uri' => '/cgi-bin/dnsforward.cgi',
+                'title' => "$Lang::tr{'dnsforward'}",
+                'enabled' => 1
+                 };
+    $subnetwork->{'60.routes'} = {
+				'caption' => $Lang::tr{'static routes'},
+				'uri' => '/cgi-bin/routing.cgi',
+				'title' => "$Lang::tr{'static routes'}",
+				'enabled' => 1,
+				 };
+    $subnetwork->{'70.aliases'} = {
+				'caption' => $Lang::tr{'aliases'},
+				'uri' => '/cgi-bin/aliases.cgi',
+				'title' => "$Lang::tr{'aliases'}",
+				'enabled' => (`grep "RED_TYPE=STATIC" /var/ipfire/ethernet/settings` ? 1 : 0),
+				};
+    $subnetwork->{'80.macadressmenu'} = {
+				'caption' => $Lang::tr{'mac address menu'},
+				'uri' => '/cgi-bin/mac.cgi',
+				'title' => "$Lang::tr{'mac address menu'}",
+				'enabled' => 1,
+				 };
+    $subnetwork->{'90.wakeonlan'} = {
+				'caption' => $Lang::tr{'WakeOnLan'},
+				'uri' => '/cgi-bin/wakeonlan.cgi',
+				'title' => "$Lang::tr{'WakeOnLan'}",
+				'enabled' => 1,
+				};
