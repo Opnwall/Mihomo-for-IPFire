@@ -4,7 +4,7 @@
 ![](image/mihomo.png)
 
 ## 集成程序
-[mihomo]([https://github.com/IrineSistiana/mosdns](https://github.com/metacubex/mihomo)) 
+[mihomo](https://github.com/metacubex/mihomo)
 
 ## 注意事项
 1. 当前仅支持x86_64 平台。
