@@ -1,10 +1,10 @@
-## Mihomo for IPFire
-控制 Mihomo 运行，实现透明代理。包含配置修改、程序控制、日志查看功能。在IPFire-2.29-x86_64-Core-Update-200测试通过。
+## mihomo for IPFire
+控制 mihomo 运行，实现透明代理。包含配置修改、程序控制、日志查看功能。在IPFire-2.29-x86_64-Core-Update-200测试通过。
 
 ![](image/mihomo.png)
 
 ## 集成程序
-[Mihomo]([https://github.com/IrineSistiana/mosdns](https://github.com/metacubex/mihomo)) 
+[mihomo]([https://github.com/IrineSistiana/mosdns](https://github.com/metacubex/mihomo)) 
 
 ## 注意事项
 1. 当前仅支持x86_64 平台。
