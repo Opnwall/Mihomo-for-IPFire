@@ -1,7 +1,7 @@
 ## Mihomo for IPFire
 在IPFire上运行Mihomo实现透明代理。带Web控制界面，可以进行配置修改、程序控制、日志查看。在IPFire 2.29 (x86_64)上测试通过。
 
-![](images/mihomo.png)
+![](image/mihomo.png)
 
 ## 集成程序
 [Mihomo]([https://github.com/IrineSistiana/mosdns](https://github.com/metacubex/mihomo)) 
