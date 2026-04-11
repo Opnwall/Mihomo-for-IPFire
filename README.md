@@ -1,25 +1,20 @@
-## Clash for OPNsense
-Clash安装工具，在OPNsense上运行Clash、Mosdns，实现透明代理。支持Clash订阅、DNS分流。带Web控制界面，可以进行配置修改、程序控制、日志查看。在OPNsense 25.7上测试通过。
+## Mihomo for IPFire
+在IPFire上运行Mihomo实现透明代理。带Web控制界面，可以进行配置修改、程序控制、日志查看。在IPFire 2.29 (x86_64)上测试通过。
 
-![](images/proxy.png)
+![](images/mihomo.png)
 
 ## 集成程序
-[MosDNS](https://github.com/IrineSistiana/mosdns) 
-
-[Vincent-Loeng大佬魔改Mihomo](https://github.com/Vincent-Loeng/mihomo) 
+[Mihomo](https://github.com/IrineSistiana/mosdns) 
 
 ## 注意事项
 1. 当前仅支持x86_64 平台。
-2. 脚本不提供任何订阅信息，请准备好自己的Clash订阅URL。
-3. 脚本会自动添加tun接口、防火墙规则，修改dns端口，重启服务并应用配置。
-4. 脚本已集成了可用的默认配置，只需替换clash的proxies和rule部分配置即可使用。
-5. 为减少长期运行保存的日志数量，在调试完成后，请将所有配置的日志类型修改为error或warn。
+2. 脚本已集成了可用的默认配置，只需替换clash的proxies和rule部分配置即可使用。
+3. 为减少长期运行保存的日志数量，在调试完成后，请将所有配置的日志类型修改为error或warn。
 
 ## 安装命令
 ```bash
 sh install.sh
 ```
-![](images/mihomo.png)
 ## 卸载命令
 ```bash
 sh uninstall.sh
