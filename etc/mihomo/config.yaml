@@ -1,0 +1,164 @@
+port: 7890
+allow-lan: true
+mode: rule
+log-level: info
+unified-delay: true
+external-controller: '0.0.0.0:9090'
+external-ui: /etc/mihomo/ui
+secret: 123456
+tun:
+  enable: true
+  stack: system
+  device: tun_0
+  mtu: 9000
+  auto-route: true
+  strict-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - any:53
+    - tcp://any:53
+dns:
+  enable: true 
+  listen: "0.0.0.0:1053"
+  ipv6: true
+  prefer-h3: false
+  respect-rules: true
+  use-system-hosts: false
+  cache-algorithm: "arc"
+  enhanced-mode: "fake-ip"
+  fake-ip-range: "198.18.0.1/16"
+  fake-ip-filter:
+    - "+.lan"
+    - "+.local"
+    - "+.msftconnecttest.com"
+    - "+.msftncsi.com"
+    - "localhost.ptlogin2.qq.com"
+    - "localhost.sec.qq.com"
+    - "+.in-addr.arpa"
+    - "+.ip6.arpa"
+    - "time.*.com"
+    - "time.*.gov"
+    - "pool.ntp.org"
+    - "localhost.work.weixin.qq.com"
+  default-nameserver: ["223.5.5.5", "1.2.4.8"]
+  nameserver:
+    - "https://208.67.222.222/dns-query"
+    - "https://1.1.1.1/dns-query"
+    - "https://8.8.4.4/dns-query"
+  proxy-server-nameserver:
+    - "https://223.5.5.5/dns-query"
+    - "https://doh.pub/dns-query"
+  nameserver-policy:
+    "geosite:private,cn":
+      - "https://223.5.5.5/dns-query"
+      - "https://doh.pub/dns-query"
+
+proxies:
+- name: vless-reality-vision-rack               
+  type: vless
+  server: 188.23.137.31                          
+  port: 1443                                
+  uuid: 8fe61518-4339-4c11-9c90-9ff4f55bed4c   
+  network: tcp
+  udp: true
+  tls: true
+  flow: xtls-rprx-vision
+  servername: apple.com                 
+  reality-opts: 
+    public-key: L2vzYibLgRAaWy_ciEVyvOtdqA6U_XLvgSv-ikaUVmA    
+    short-id: b526e6d1                      
+  client-fingerprint: chrome                  
+
+- name: vmess-ws-rack                         
+  type: vmess
+  server: 188.23.137.31                        
+  port: 2443                                     
+  uuid: 8fe61518-4339-4c11-9c90-9ff4f55bed4c       
+  alterId: 0
+  cipher: auto
+  udp: true
+  tls: false
+  network: ws
+  servername: www.bing.com                    
+  ws-opts:
+    path: "8fe61518-4339-4c11-9c90-9ff4f55bed4c-vm"                             
+    headers:
+      Host: www.bing.com                     
+
+- name: hysteria2-rack                            
+  type: hysteria2                                      
+  server: 188.23.137.31                              
+  port: 3443                                
+  password: 8fe61518-4339-4c11-9c90-9ff4f55bed4c                          
+  alpn:
+    - h3
+  sni: www.bing.com                               
+  skip-cert-verify: true
+  fast-open: true
+
+- name: tuic5-rack                            
+  server: 188.23.137.31                    
+  port: 4443                                    
+  type: tuic
+  uuid: 8fe61518-4339-4c11-9c90-9ff4f55bed4c       
+  password: 8fe61518-4339-4c11-9c90-9ff4f55bed4c   
+  alpn: [h3]
+  disable-sni: true
+  reduce-rtt: true
+  udp-relay-mode: native
+  congestion-controller: bbr
+  sni: www.bing.com                                
+  skip-cert-verify: true
+
+- name: anytls-rack
+  type: anytls
+  server: 188.23.137.31
+  port: 5443
+  password: 8fe61518-4339-4c11-9c90-9ff4f55bed4c
+  client-fingerprint: chrome
+  udp: true
+  idle-session-check-interval: 30
+  idle-session-timeout: 30
+  sni: www.bing.com
+  skip-cert-verify: true
+
+proxy-groups:
+- name: 负载均衡
+  type: load-balance
+  url: https://www.gstatic.com/generate_204
+  interval: 300
+  strategy: round-robin
+  proxies:
+    - vless-reality-vision-rack                              
+    - vmess-ws-rack
+    - hysteria2-rack
+    - tuic5-rack
+    - anytls-rack
+
+- name: 自动选择
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 300
+  tolerance: 50
+  proxies:
+    - vless-reality-vision-rack                              
+    - vmess-ws-rack
+    - hysteria2-rack
+    - tuic5-rack
+    - anytls-rack
+    
+- name: 🌍选择代理节点
+  type: select
+  proxies:
+    - 负载均衡                                         
+    - 自动选择
+    - DIRECT
+    - vless-reality-vision-rack                              
+    - vmess-ws-rack
+    - hysteria2-rack
+    - tuic5-rack
+    - anytls-rack
+rules:
+  - GEOIP,LAN,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,🌍选择代理节点
