@@ -13,7 +13,7 @@ my %selected=();
 
 # ====== 可调整路径 ======
 my $service      = "/etc/init.d/mihomo";
-my $mihomo_conf  = "/etc/mihomo/config.yaml";
+my $mihomo_conf  = "/usr/local/etc/mihomo/config.yaml";
 my $mihomo_log   = "/var/log/mihomo.log";
 my $sudo_cmd     = "/usr/bin/sudo";
 # ========================
@@ -112,6 +112,24 @@ chomp $status;
 # ====== 页面 ======
 &Header::openpage("Mihomo", 1, '');
 print "<meta charset='UTF-8'>\n";
+print <<'EOF';
+<style>
+.status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+}
+.status-dot.running {
+    background: #2ecc71;
+}
+.status-dot.stopped {
+    background: #e74c3c;
+}
+</style>
+EOF
 &Header::openbigbox('100%', 'left', '', '');
 
 print "<form method='post'>";
@@ -121,9 +139,9 @@ print "<form method='post'>";
 
 print "<b>状态:</b> ";
 if ($status =~ /running/i) {
-    print "<font color='green'>运行中</font>";
+    print "<span class='status-dot running'></span><span style='color:green;'>运行中</span>";
 } else {
-    print "<font color='red'>已停止</font>";
+    print "<span class='status-dot stopped'></span><span style='color:red;'>已停止</span>";
 }
 
 print "<br><br>";
