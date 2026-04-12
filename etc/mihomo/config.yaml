@@ -4,7 +4,7 @@ mode: rule
 log-level: info
 unified-delay: true
 external-controller: '0.0.0.0:9090'
-external-ui: /etc/mihomo/ui
+external-ui: /usr/local/etc/mihomo/ui
 secret: 123456
 tun:
   enable: true
@@ -56,7 +56,7 @@ dns:
 proxies:
 - name: vless-reality-vision-rack               
   type: vless
-  server: 188.23.137.31                          
+  server: 88.88.88.88                          
   port: 1443                                
   uuid: 8fe61518-4339-4c11-9c90-9ff4f55bed4c   
   network: tcp
@@ -71,7 +71,7 @@ proxies:
 
 - name: vmess-ws-rack                         
   type: vmess
-  server: 188.23.137.31                        
+  server: 88.88.88.88                        
   port: 2443                                     
   uuid: 8fe61518-4339-4c11-9c90-9ff4f55bed4c       
   alterId: 0
@@ -87,7 +87,7 @@ proxies:
 
 - name: hysteria2-rack                            
   type: hysteria2                                      
-  server: 188.23.137.31                              
+  server: 88.88.88.88                              
   port: 3443                                
   password: 8fe61518-4339-4c11-9c90-9ff4f55bed4c                          
   alpn:
@@ -97,7 +97,7 @@ proxies:
   fast-open: true
 
 - name: tuic5-rack                            
-  server: 188.23.137.31                    
+  server: 88.88.88.88                    
   port: 4443                                    
   type: tuic
   uuid: 8fe61518-4339-4c11-9c90-9ff4f55bed4c       
@@ -112,7 +112,7 @@ proxies:
 
 - name: anytls-rack
   type: anytls
-  server: 188.23.137.31
+  server: 88.88.88.88
   port: 5443
   password: 8fe61518-4339-4c11-9c90-9ff4f55bed4c
   client-fingerprint: chrome
