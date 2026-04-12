@@ -27,22 +27,19 @@ for dir in ./menu ./cgi-bin ./etc ./bin; do
     fi
 done
 
-print_step "备份原有菜单文件"
-cp -a /var/ipfire/menu.d/30-network.menu /var/ipfire/menu.d/30-network.menu.bak 2>/dev/null || true
-
 print_step "复制文件"
-install -d -m 755 /etc/mihomo
+install -d -m 755 /usr/local/etc/mihomo
 cp -a ./menu/* /var/ipfire/menu.d/
 cp -a ./cgi-bin/* /srv/web/ipfire/cgi-bin/
 cp -a ./etc/init.d/mihomo /etc/init.d/mihomo
-cp -a ./etc/mihomo/* /etc/mihomo/
+cp -a ./etc/mihomo/* /usr/local/etc/mihomo/
 cp -a ./bin/* /usr/local/bin/
 
 print_step "设置文件权限"
 chmod +x /etc/init.d/mihomo
 chmod +x /usr/local/bin/mihomo
 chmod +x /srv/web/ipfire/cgi-bin/mihomo.cgi
-chmod 644 /etc/mihomo/config.yaml
+chmod a+w /usr/local/etc/mihomo/config.yaml
 
 install -d -m 755 /var/run/mihomo
 touch /var/log/mihomo.log
@@ -51,8 +48,17 @@ chmod 644 /var/log/mihomo.log
 print_step "配置开机自启"
 ln -sf /etc/init.d/mihomo /etc/rc.d/rc3.d/S99mihomo
 
+print_step "配置sudo权限"
+{
+    echo "nobody ALL=(ALL) NOPASSWD: /etc/init.d/mihomo"
+    echo "nobody ALL=(ALL) NOPASSWD: /usr/local/bin/mihomo"
+    echo "nobody ALL=(ALL) NOPASSWD: /bin/sh"
+    echo "nobody ALL=(ALL) NOPASSWD: /bin/rm"
+} >> /etc/sudoers.d/mihomo
+chmod 440 /etc/sudoers.d/mihomo
+
 print_step "重载 Web 服务"
 /etc/init.d/apache reload >/dev/null 2>&1
 
 echo
-echo "Mihomo 安装完成！请前往 Web 界面进行配置（网络 > Mihomo）。"
+echo "Mihomo 安装完成！请前往 Web 界面进行配置（服务 > Mihomo）。"

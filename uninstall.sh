@@ -30,16 +30,16 @@ print_step "删除程序文件"
 rm -f /etc/init.d/mihomo
 rm -f /usr/local/bin/mihomo
 rm -f /srv/web/ipfire/cgi-bin/mihomo.cgi
+rm -f /var/ipfire/menu.d/82-mihomo.menu
 
 print_step "删除运行文件"
 rm -rf /var/run/mihomo
 rm -f /var/log/mihomo.log
+rm -f /etc/sudoers.d/mihomo
 
 print_step "删除配置文件"
-rm -rf /etc/mihomo
+rm -rf /usr/local/etc/mihomo
 
-print_step "恢复菜单"
-cp -a /var/ipfire/menu.d/30-network.menu.bak /var/ipfire/menu.d/30-network.menu 2>/dev/null || true
 
 print_step "重载 Web 服务"
 /etc/init.d/apache reload >/dev/null 2>&1 || true
