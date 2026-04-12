@@ -1,5 +1,5 @@
 ## mihomo for IPFire
-控制 mihomo 运行，实现透明代理。包含配置修改、程序控制、日志查看功能。在IPFire-2.29-x86_64-Core-Update-200测试通过。
+控制 mihomo 运行，实现透明代理。包含配置修改、程序控制、日志查看功能。在IPFire-2.29-x86_64-Core-Update-200上测试通过。
 
 ![](image/mihomo.png)
 
