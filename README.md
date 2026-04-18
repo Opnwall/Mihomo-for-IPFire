@@ -42,7 +42,7 @@ sh uninstall.sh
 ```bash
 /etc/init.d/unbound restartDNS
 ```
-然后调整mihomo的配置文件，将 DNS 端口改为 53，接管默认解析请求。
+然后修改 mihomo 配置文件 DNS 端口改为 53，接管默认解析请求。
 
 ## 其他事项
 1. 脚本具备开机自启功能。
