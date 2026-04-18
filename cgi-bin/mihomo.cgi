@@ -18,21 +18,38 @@ my $mihomo_log   = "/var/log/mihomo.log";
 my $sudo_cmd     = "/usr/bin/sudo";
 # ========================
 
-&Header::showhttpheaders();
-
 &Header::getcgihash(\%settings);
 
-# AJAX 日志接口
-if ($settings{'ajax'} && $settings{'ajax'} eq 'log') {
-    print "Content-Type: text/plain; charset=UTF-8\n\n";
-    system("tail -n 50 /var/log/mihomo.log");
+# ====== AJAX 日志接口 ======
+my $is_ajax_log = (
+    (defined $settings{'ajax'} && $settings{'ajax'} eq 'log') ||
+    (($ENV{'QUERY_STRING'} || '') =~ /(?:^|&)ajax=log(?:&|$)/)
+);
+
+if ($is_ajax_log) {
+    print "Content-Type: text/plain; charset=UTF-8\n";
+    print "Cache-Control: no-cache, no-store, must-revalidate\n";
+    print "Pragma: no-cache\n";
+    print "Expires: 0\n\n";
+
+    my $log_output = '';
+    if (open(my $logfh, '<:encoding(UTF-8)', $mihomo_log)) {
+        my @lines = <$logfh>;
+        close($logfh);
+        @lines = @lines > 50 ? @lines[-50 .. -1] : @lines;
+        $log_output = join('', @lines);
+    } else {
+        $log_output = "无法读取日志文件: $mihomo_log ($!)\n";
+    }
+    print $log_output;
     exit;
 }
+
+&Header::showhttpheaders();
 
 my $action = $settings{'ACTION'} || '';
 my $cmd_output = '';
 my $show_output = 0;
-
 my $save_message = '';
 
 sub decode_post_utf8 {
@@ -81,26 +98,22 @@ if ($action eq 'saveconf') {
 if ($action eq 'start') {
     my $clear_out = clear_log_file();
     my $out = run_service_command('start');
-    my $code = $? >> 8;
     $cmd_output = ($clear_out ? $clear_out : '') . $out;
     $show_output = 1;
 }
 elsif ($action eq 'stop') {
     my $out = run_service_command('stop');
-    my $code = $? >> 8;
     $cmd_output = $out;
     $show_output = 1;
 }
 elsif ($action eq 'restart') {
     my $clear_out = clear_log_file();
     my $out = run_service_command('restart');
-    my $code = $? >> 8;
     $cmd_output = ($clear_out ? $clear_out : '') . $out;
     $show_output = 1;
 }
 elsif ($action eq 'clearlog') {
     my $out = clear_log_file();
-    my $code = $? >> 8;
     $cmd_output = ($out ? $out : '') . "日志已清空";
     $show_output = 1;
 }
@@ -112,6 +125,7 @@ chomp $status;
 # ====== 页面 ======
 &Header::openpage("Mihomo", 1, '');
 print "<meta charset='UTF-8'>\n";
+
 print <<'EOF';
 <style>
 .status-dot {
@@ -120,18 +134,13 @@ print <<'EOF';
     height: 10px;
     border-radius: 50%;
     margin-right: 6px;
-    vertical-align: middle;
 }
-.status-dot.running {
-    background: #2ecc71;
-}
-.status-dot.stopped {
-    background: #e74c3c;
-}
+.status-dot.running { background: #2ecc71; }
+.status-dot.stopped { background: #e74c3c; }
 </style>
 EOF
-&Header::openbigbox('100%', 'left', '', '');
 
+&Header::openbigbox('100%', 'left', '', '');
 print "<form method='post'>";
 
 # ====== 状态 ======
@@ -151,7 +160,7 @@ print "<button type='submit' name='ACTION' value='stop'>停止</button>  ";
 print "<button type='submit' name='ACTION' value='restart'>重启</button>  ";
 
 if ($show_output) {
-    print "<br><br><pre style='color:#ff3333;background:#111;padding:5px;box-sizing:border-box;margin:0;white-space:pre-wrap;'>";
+    print "<br><br><pre style='color:#ff3333;background:#111;padding:5px;white-space:pre-wrap;'>";
     print &Header::escape($cmd_output);
     print "</pre>";
 }
@@ -161,47 +170,52 @@ if ($show_output) {
 # ====== 配置 ======
 &Header::openbox('100%', 'left', '配置文件');
 
-print "<div style='margin-bottom:8px;'><button type='submit' name='ACTION' value='saveconf'>保存配置</button></div>";
+print "<div><button type='submit' name='ACTION' value='saveconf'>保存配置</button></div>";
+
 my $conf_content = '';
 if (-e $mihomo_conf) {
-    if (open(my $fh, "<:encoding(UTF-8)", $mihomo_conf)) {
-        local $/;
-        $conf_content = <$fh>;
-        close($fh);
-    } else {
-        open(my $fh, "<", $mihomo_conf);
-        local $/;
-        $conf_content = <$fh>;
-        close($fh);
-    }
+    open(my $fh, "<:encoding(UTF-8)", $mihomo_conf);
+    local $/;
+    $conf_content = <$fh>;
+    close($fh);
 }
 
-print "<textarea name='CONF' cols='100' rows='15' style='width:100%;box-sizing:border-box;'>";
+print "<textarea name='CONF' style='width:100%;height:200px;'>";
 print &Header::escape($conf_content);
-print "</textarea><br>";
+print "</textarea>";
 
 &Header::closebox();
 
 # ====== 日志 ======
 &Header::openbox('100%', 'left', '实时日志');
-print "<div style='margin-bottom:8px;'><button type='submit' name='ACTION' value='clearlog'>清空日志</button></div>";
-print "<pre id='logbox' style='background:#000;color:#0f0;height:220px;overflow:auto;width:100%;box-sizing:border-box;margin:0;white-space:pre-wrap;'>";
 
-if (-e $mihomo_log) {
-    my @lines = `tail -n 100 $mihomo_log`;
-    print @lines;
-} else {
-    print "暂无日志文件。";
-}
+print "<div><button type='submit' name='ACTION' value='clearlog'>清空日志</button></div>";
 
-print "</pre>";
+print "<pre id='logbox' style='background:#000;color:#0f0;height:250px;overflow:auto;'>加载中...</pre>";
+
 print <<'EOF';
 <script>
 (function() {
     var logbox = document.getElementById('logbox');
-    if (logbox) {
-        logbox.scrollTop = logbox.scrollHeight;
+
+    function fetchLogs() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', window.location.pathname + '?ajax=log&_=' + Date.now(), true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200 && logbox) {
+                    logbox.textContent = xhr.responseText;
+                    logbox.scrollTop = logbox.scrollHeight;
+                } else if (logbox) {
+                    logbox.textContent = '日志加载失败，HTTP 状态: ' + xhr.status;
+                }
+            }
+        };
+        xhr.send();
     }
+
+    fetchLogs();
+    setInterval(fetchLogs, 3000); // 每3秒刷新
 })();
 </script>
 EOF
@@ -209,6 +223,5 @@ EOF
 &Header::closebox();
 
 print "</form>";
-
 &Header::closebigbox();
 &Header::closepage();
