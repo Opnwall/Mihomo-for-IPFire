@@ -25,7 +25,7 @@ sh uninstall.sh
 ## 配置过程
 1. 安装完成，导航到 服务>Mihomo 菜单，修改配置并保存。
 2. 点击启动按钮，根据输出日志内容，排除配置文件错误。
-3. 为了避免 DNS 解析冲突，建议修改/etc/unbound/unbound.conf文件，将默认端口 53 改为其他端口：
+3. 为了避免 DNS 解析冲突，建议修改 /etc/unbound/unbound.conf文件，将默认端口 53 改为其他端口如5353：
 ```bash
 	# Listen on all interfaces
 	interface-automatic: yes
@@ -43,7 +43,6 @@ sh uninstall.sh
 /etc/init.d/unbound restartDNS
 ```
 然后调整mihomo的配置文件，将 DNS 端口改为 53，接管默认解析请求。
-4. 正常启动后，客户端访问 ip111.cn，检查分流是否正常。
 
 ## 其他事项
 1. 脚本具备开机自启功能。
