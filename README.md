@@ -31,7 +31,7 @@ forward-zone:
     name: "."
     forward-addr: 127.0.0.1@1053
 ```
-运行以下命令重启 unbound
+重启 unbound
 ```bash
 /etc/init.d/unbound restart
 ```
