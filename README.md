@@ -25,19 +25,26 @@ sh uninstall.sh
 ## 配置过程
 1. 安装完成，导航到 服务>Mihomo 菜单，修改配置并保存。
 2. 点击启动按钮，根据输出日志内容，排除配置文件错误。
-3. 为了避免 DNS 解析冲突，可以将系统 DNS 转发到 mihomo，修改/etc/unbound/unbound.conf文件，添加以下内容：
+3. 为了避免 DNS 解析冲突，建议修改/etc/unbound/unbound.conf文件，将默认端口 53 改为其他端口：
 ```bash
-forward-zone:
-    name: "."
-    forward-addr: 127.0.0.1@1053
+	# Listen on all interfaces
+	interface-automatic: yes
+	interface: 0.0.0.0
+```
+修改为：
+```bash
+	# Listen on all interfaces
+	interface-automatic: no
+	interface: 0.0.0.0
+	port: 5353
 ```
 重启 unbound
 ```bash
-/etc/init.d/unbound restart
+/etc/init.d/unbound restartDNS
 ```
+然后调整mihomo的配置文件，将 DNS 端口改为 53，接管默认解析请求。
 4. 正常启动后，客户端访问 ip111.cn，检查分流是否正常。
 
 ## 其他事项
 1. 脚本具备开机自启功能。
-2. 启动 mihomo 后，黑名单、入侵检测列表可能无法下载，Pakfire也无法安装软件。
-3. 默认配置文件开启了 api 功能，访问 http://lan_ip:9090/ui 登录 Mihomo 仪表盘(metacubexd)。
+2. 默认配置文件开启了 api 功能，访问 http://lan_ip:9090/ui 登录 Mihomo 仪表盘(metacubexd)。
