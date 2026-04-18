@@ -25,7 +25,7 @@ sh uninstall.sh
 ## 配置过程
 1. 安装完成，导航到 服务>Mihomo 菜单，修改配置并保存。
 2. 点击启动按钮，根据输出日志内容，排除配置文件错误。
-3. 为了避免DNS冲突，可以将系统DNS转发到mihomo的DNS所使用的端口，修改/etc/unbound/unbound.conf文件，添加以下内容：
+3. 为了避免 DNS 解析冲突，可以将系统 DNS 转发到 mihomo，修改/etc/unbound/unbound.conf文件，添加以下内容：
 ```bash
 forward-zone:
     name: "."
@@ -34,9 +34,10 @@ forward-zone:
 运行以下命令重启 unbound
 ```bash
 /etc/init.d/unbound restart
-```bash
+```
 4. 正常启动后，客户端访问 ip111.cn，检查分流是否正常。
 
 ## 其他事项
 1. 脚本具备开机自启功能。
-2. 默认配置文件开启了 api 功能，访问 http://lan_ip:9090/ui 登录 Mihomo 仪表盘(metacubexd)。
+2. 启动mihomo后，黑名单和入侵检测列表可能无法下载。
+3. 默认配置文件开启了 api 功能，访问 http://lan_ip:9090/ui 登录 Mihomo 仪表盘(metacubexd)。
