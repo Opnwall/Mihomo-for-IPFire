@@ -39,5 +39,5 @@ forward-zone:
 
 ## 其他事项
 1. 脚本具备开机自启功能。
-2. 启动 mihomo 后，黑名单和入侵检测列表可能无法下载。
+2. 启动 mihomo 后，黑名单、入侵检测列表可能无法下载，Pakfire也无法安装软件。
 3. 默认配置文件开启了 api 功能，访问 http://lan_ip:9090/ui 登录 Mihomo 仪表盘(metacubexd)。
