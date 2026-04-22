@@ -40,7 +40,7 @@ sh uninstall.sh
 ```
 重启 unbound
 ```bash
-/etc/init.d/unbound restartDNS
+/etc/init.d/unbound restart
 ```
 然后修改 mihomo 配置文件 DNS 端口改为 53，接管默认解析请求。
 
