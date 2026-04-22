@@ -27,16 +27,16 @@ sh uninstall.sh
 2. 点击启动按钮，根据输出日志内容，排除配置文件错误。
 3. 为了避免 DNS 解析冲突，建议修改 /etc/unbound/unbound.conf文件，将默认端口 53 改为其他端口如5353：
 ```bash
-	# Listen on all interfaces
-	interface-automatic: yes
-	interface: 0.0.0.0
+# Listen on all interfaces
+interface-automatic: yes
+interface: 0.0.0.0
 ```
 修改为：
 ```bash
-	# Listen on all interfaces
-	interface-automatic: no
-	interface: 0.0.0.0
-	port: 5353
+# Listen on all interfaces
+interface-automatic: no
+interface: 0.0.0.0
+port: 5353
 ```
 重启 unbound
 ```bash
